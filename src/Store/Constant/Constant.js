@@ -3,7 +3,9 @@ const actionTypes = {
     USER: "USER",
     ALLUSER: 'ALLUSER',
     CHAT: 'CHAT',
-    FLAG:'FALG'
+    FLAG: 'FALG',
+    ALLPOST: 'ALLPOST',
+    POST: 'POST'
 }
 
 export default actionTypes;

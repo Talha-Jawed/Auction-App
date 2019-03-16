@@ -5,7 +5,9 @@ const INITIAL_STATE = {
     USER: null,
     ALLUSER: null,
     CHAT: null,
-    FLAG: false
+    ALLPOST: null,
+    POST: null,
+    FLAG: false,
 }
 
 export default (states = INITIAL_STATE, action) => {
@@ -29,6 +31,16 @@ export default (states = INITIAL_STATE, action) => {
             return ({
                 ...states,
                 CHAT: action.payload
+            })
+        case 'ALLPOST':
+            return ({
+                ...states,
+                ALLPOST: action.payload
+            })
+        case 'POST':
+            return ({
+                ...states,
+                POST: action.payload
             })
         case 'FLAG':
             return ({

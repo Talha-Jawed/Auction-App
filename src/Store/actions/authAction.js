@@ -48,6 +48,8 @@ export function current_User(currentUser) {
     return dispatch => {
         const UID = currentUser.uid
         var arr = [];
+        var currentUserPost = [];
+        var PostArray = [];
         dispatch(
             { type: actionTypes.UID, payload: UID }
         )
@@ -68,7 +70,26 @@ export function current_User(currentUser) {
             }
         })
 
-      
+        firebase.database().ref('/Post/').on("child_added", snapShot => {
+            for (var key in snapShot.val()) {
+                var val = snapShot.val()[key]
+                if (snapShot.key === UID) {
+                    currentUserPost.push(val)
+                    dispatch(
+                        { type: actionTypes.POST, payload: currentUserPost }
+                    )
+                    // console.log('======>>>', currentUserPost);
+                } else {
+                    PostArray.push(val)
+                    dispatch(
+                        { type: actionTypes.ALLPOST, payload: PostArray }
+                    )
+                    // console.log(PostArray, '------');
+                }
+            }
+
+        })
+
         // MESSAGES
         // var arr = [];
         // var flag
@@ -94,7 +115,7 @@ export function current_User(currentUser) {
 // LOG OUT
 export function _logOut() {
     console.log('logOut****');
-    
+
     return dispatch => {
         firebase.auth().signOut().then(() => {
             dispatch(
@@ -108,6 +129,12 @@ export function _logOut() {
             )
             dispatch(
                 { type: actionTypes.CHAT, payload: null }
+            )
+            dispatch(
+                { type: actionTypes.ALLPOST, payload: null }
+            )
+            dispatch(
+                { type: actionTypes.POST, payload: null }
             )
         })
     }
