@@ -60,17 +60,6 @@ class createPost extends React.Component {
             isDateTimePickerVisible: false,
         }
     }
-    componentDidMount() {
-        const { UID, CurrentUser } = this.props
-        console.log('didid', UID, CurrentUser);
-
-    }
-
-    componentWillReceiveProps(props) {
-        const { UID, CurrentUser } = props
-        console.log('prpraaaa', UID, CurrentUser);
-
-    }
 
     _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
 
@@ -134,7 +123,7 @@ class createPost extends React.Component {
         } else if (!Price) {
             alert('Please Add Price')
         } else {
-            alert('ok')
+            alert('Submitted')
             const obj = {
                 image,
                 UID,
@@ -145,6 +134,7 @@ class createPost extends React.Component {
                 Price
             }
             firebase.database().ref('/Post/' + UID).push(obj)
+            this.props.navigation.navigate('Dashboard')
         }
     }
 
