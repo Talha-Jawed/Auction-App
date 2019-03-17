@@ -79,6 +79,11 @@ class Dashboard extends React.Component {
         this.props.navigation.navigate('Inbox')
     }
 
+    auction(){
+        this._menu.hide();
+        this.props.navigation.navigate('MyAuction')
+    }
+
     LogOut() {
         this.props.userLogOut()
         const resetAction = StackActions.reset({
@@ -107,7 +112,7 @@ class Dashboard extends React.Component {
                     button={<Text></Text>}
                 >
                     <MenuItem onPress={() => this.createPost()}>Add Services</MenuItem>
-                    <MenuItem >Profile</MenuItem>
+                    <MenuItem onPress={()=> this.auction()}>Auction</MenuItem>
                     <MenuItem >Notifications</MenuItem>
                     <MenuItem onPress={() => this.inbox()} >Inbox</MenuItem>
                     <MenuDivider />

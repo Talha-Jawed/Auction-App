@@ -5,6 +5,8 @@ import createPost from '../screen/create post/Create'
 import ViewAuction from '../screen/viewAuction/ViewAuction';
 import Chat from '../screen/chat/Chat';
 import Inbox from '../screen/inbox/Inbox';
+import MyAuction from '../screen/myAuction/MyAuction';
+import ViewMyAuction from '../screen/viewMyAuction/ViewMyAuction';
 
 const StackNavigator = createStackNavigator({
     LogIn: {
@@ -22,8 +24,14 @@ const StackNavigator = createStackNavigator({
     Chat: {
         screen: Chat
     },
-    Inbox:{
+    Inbox: {
         screen: Inbox
+    },
+    MyAuction: {
+        screen: MyAuction
+    },
+    ViewMyAuction:{
+        screen: ViewMyAuction
     }
 })
 
