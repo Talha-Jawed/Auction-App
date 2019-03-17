@@ -30,6 +30,8 @@ class ViewAuction extends React.Component {
         this.setState({ item, UID })
         firebase.database().ref('/Post/' + auctionUID).on("child_added", snapShot => {
             if (snapShot.key === item.key) {
+                console.log(snapShot.val() , '====');
+                
                 var bids = snapShot.val().bid
                 if (bids) {
                     bids.map(item => {
@@ -37,6 +39,7 @@ class ViewAuction extends React.Component {
                             bidArr.push(item)
                         }
                     })
+                    this.setState({ _BIDS: bids })
                     this.allBids(bids)
                 }
             }
@@ -68,17 +71,30 @@ class ViewAuction extends React.Component {
     }
 
     sendBid() {
-        const { item, amount, UID, bids } = this.state
+        const { item, amount, UID, _BIDS } = this.state
         const key = item.key
         const auctionUID = item.data.UID
-        console.log('----====>>>', bids);
+        var _allBids = _BIDS
         if (amount) {
             this.setState({ priceInput: false })
-            // this.props._send
             var obj = {
-                bid: [{ amount, buyerUID: UID }]
+                amount,
+                buyerUID: UID
             }
-            // firebase.database().ref('/Post/' + auctionUID + '/' + key + '/').update(obj)
+            if (_BIDS) {
+                _allBids.push(obj)
+                firebase.database().ref('/Post/' + auctionUID + '/' + key + '/' + 'bid').set(_allBids)
+            } else {
+                var objt = {
+                    bid: [{
+                        amount,
+                        buyerUID: UID
+                    }]
+                }
+                firebase.database().ref('/Post/' + auctionUID + '/' + key + '/' ).update(objt)
+
+            }
+            // console.log('====>>>', _allBids);
         } else {
             alert('Please input Correct Ammount')
         }
@@ -164,7 +180,7 @@ class ViewAuction extends React.Component {
     inputComponent() {
         const { amount } = this.state
         return (
-            <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row' }}>
+            <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'row', marginVertical: 8 }}>
                 <TextInput
                     style={styles.input}
                     onChangeText={(e) => this.setState({ amount: e })}
@@ -172,6 +188,7 @@ class ViewAuction extends React.Component {
                     placeholder={'amount'}
                     placeholderTextColor='rgba(255,255,255,0.7)'
                     autoFocus
+                    keyboardType='numeric'
                 />
                 <Text onPress={() => this.sendBid()} style={{ fontSize: 18, fontWeight: 'bold', color: "#3498db", paddingTop: 10 }}>
                     <Icon name='send' size={20} color='#3498db' /> {'Submit'}
