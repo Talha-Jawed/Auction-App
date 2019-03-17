@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, ActivityIndicator } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import firebase from 'firebase';
 import { connect } from 'react-redux';
@@ -74,6 +74,11 @@ class Dashboard extends React.Component {
 
     }
 
+    inbox() {
+        this._menu.hide();
+        this.props.navigation.navigate('Inbox')
+    }
+
     LogOut() {
         this.props.userLogOut()
         const resetAction = StackActions.reset({
@@ -104,7 +109,7 @@ class Dashboard extends React.Component {
                     <MenuItem onPress={() => this.createPost()}>Add Services</MenuItem>
                     <MenuItem >Profile</MenuItem>
                     <MenuItem >Notifications</MenuItem>
-                    <MenuItem >Inbox</MenuItem>
+                    <MenuItem onPress={() => this.inbox()} >Inbox</MenuItem>
                     <MenuDivider />
                     <MenuItem onPress={() => this.LogOut()}><Text style={styles.logOutBtn}>Log Out</Text></MenuItem>
                 </Menu>
@@ -114,52 +119,56 @@ class Dashboard extends React.Component {
                     <ScrollView horizontal>
                         {
                             upcomingBid
-                            &&
-                            upcomingBid.map((item, index) => {
+                                ?
+                                upcomingBid.map((item, index) => {
+                                    return (
+                                        <View key={index} style={{ flexDirection: 'row' }} >
+                                            <View style={{ height: 255, width: 170, borderWidth: 2, flex: 1, borderColor: '#e1e9f4', margin: 15, backgroundColor: '#cce6ff', borderRadius: 10, }}>
+                                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Text style={styles.cardTitle}>{item.data.category}</Text>
+                                                </View>
+                                                <View>
+                                                    <Image style={styles.imgUpcoming} source={{ uri: item.data.image }} />
+                                                </View>
+                                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Text style={styles.titleName}>Price: {item.data.Price} Pkr</Text>
+                                                </View>
+                                                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Text style={{ fontSize: 16, color: '#3498db', paddingBottom: 8, paddingTop: 3 }}>{moment(new Date(item.data.StartTime)).fromNow()}</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )
+                                })
+                                :
+                                <ActivityIndicator size="large" color="#0000ff" />
+                        }
+                    </ScrollView>
+                    <Text style={styles.heading}>Live Bidding! </Text>
+                    {
+                        liveBid ?
+                            liveBid.map((item, index) => {
                                 return (
                                     <View key={index} style={{ flexDirection: 'row' }} >
-                                        <View style={{ height: 255, width: 170, borderWidth: 2, flex: 1, borderColor: '#e1e9f4', margin: 15, backgroundColor: '#cce6ff', borderRadius: 10, }}>
+                                        <View style={{ height: 320, width: '95%', borderWidth: 2, flex: 1, borderColor: '#e1e9f4', margin: 15, backgroundColor: '#cce6ff', borderRadius: 10, }}>
                                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                                 <Text style={styles.cardTitle}>{item.data.category}</Text>
                                             </View>
                                             <View>
-                                                <Image style={styles.imgUpcoming} source={{ uri: item.data.image }} />
+                                                <Image style={styles.img} source={{ uri: item.data.image }} />
                                             </View>
                                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                                                 <Text style={styles.titleName}>Price: {item.data.Price} Pkr</Text>
                                             </View>
                                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={{ fontSize: 16, color: '#3498db', paddingBottom: 8, paddingTop: 3 }}>{moment(new Date(item.data.StartTime)).fromNow()}</Text>
+                                                <Text onPress={() => this.view(item)} style={{ fontSize: 16, color: '#3498db', paddingBottom: 8, paddingTop: 3 }}>VIEW NOW</Text>
                                             </View>
                                         </View>
                                     </View>
                                 )
                             })
-                        }
-                    </ScrollView>
-                    <Text style={styles.heading}>Live Bidding! </Text>
-                    {
-                        liveBid &&
-                        liveBid.map((item, index) => {
-                            return (
-                                <View key={index} style={{ flexDirection: 'row' }} >
-                                    <View style={{ height: 320, width: '95%', borderWidth: 2, flex: 1, borderColor: '#e1e9f4', margin: 15, backgroundColor: '#cce6ff', borderRadius: 10, }}>
-                                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text style={styles.cardTitle}>{item.data.category}</Text>
-                                        </View>
-                                        <View>
-                                            <Image style={styles.img} source={{ uri: item.data.image }} />
-                                        </View>
-                                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text style={styles.titleName}>Price: {item.data.Price} Pkr</Text>
-                                        </View>
-                                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text onPress={() => this.view(item)} style={{ fontSize: 16, color: '#3498db', paddingBottom: 8, paddingTop: 3 }}>VIEW NOW</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            )
-                        })
+                            :
+                            <ActivityIndicator size="large" color="#0000ff" />
                     }
                 </ScrollView>
             </View>

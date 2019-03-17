@@ -3,6 +3,8 @@ import LogIn from '../authentication/Auth';
 import Dashboard from '../screen/Dashboard';
 import createPost from '../screen/create post/Create'
 import ViewAuction from '../screen/viewAuction/ViewAuction';
+import Chat from '../screen/chat/Chat';
+import Inbox from '../screen/inbox/Inbox';
 
 const StackNavigator = createStackNavigator({
     LogIn: {
@@ -16,6 +18,12 @@ const StackNavigator = createStackNavigator({
     },
     ViewAuction: {
         screen: ViewAuction
+    },
+    Chat: {
+        screen: Chat
+    },
+    Inbox:{
+        screen: Inbox
     }
 })
 

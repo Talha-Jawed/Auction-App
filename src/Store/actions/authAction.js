@@ -99,23 +99,23 @@ export function current_User(currentUser) {
         })
 
         // MESSAGES
-        // var arr = [];
-        // var flag
-        // var chatMessages = []
-        // firebase.database().ref('/Messages/').on('child_added', snapShot => {
-        //     const Messages = snapShot.val();
-        //     flag = !flag
-        //     if (Messages.senderUid === UID || Messages.reciverUid === UID) {
-        //         // console.log("user", snapShot.val())
-        //         chatMessages.push(Messages)
-        //         dispatch(
-        //             { type: actionTypes.CHAT, payload: chatMessages }
-        //         )
-        //     }
-        //     dispatch(
-        //         { type: actionTypes.FLAG, payload: flag }
-        //     )
-        // })
+        var arr = [];
+        var flag
+        var chatMessages = []
+        firebase.database().ref('/Messages/').on('child_added', snapShot => {
+            const Messages = snapShot.val();
+            flag = !flag
+            if (Messages.senderUid === UID || Messages.reciverUid === UID) {
+                // console.log("user", snapShot.val())
+                chatMessages.push(Messages)
+                dispatch(
+                    { type: actionTypes.CHAT, payload: chatMessages }
+                )
+            }
+            dispatch(
+                { type: actionTypes.FLAG, payload: flag }
+            )
+        })
     }
 }
 

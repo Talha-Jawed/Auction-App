@@ -28,10 +28,17 @@ class ViewAuction extends React.Component {
         const auctionUID = item.data.UID
         var bidArr = []
         this.setState({ item, UID })
+        if (alluser) {
+            alluser.map(user => {
+                if (auctionUID === user.UID) {
+                    this.setState({ auctionUser: user })
+                }
+            })
+        }
         firebase.database().ref('/Post/' + auctionUID).on("child_added", snapShot => {
             if (snapShot.key === item.key) {
-                console.log(snapShot.val() , '====');
-                
+                // console.log(snapShot.val(), '====');
+
                 var bids = snapShot.val().bid
                 if (bids) {
                     bids.map(item => {
@@ -43,10 +50,31 @@ class ViewAuction extends React.Component {
                     this.allBids(bids)
                 }
             }
+            if (bidArr.length) {
+                this.setState({ add: true, bidArr })
+            }
         })
-        if (bidArr.length) {
-            this.setState({ add: true, bidArr })
-        }
+
+
+        firebase.database().ref('/Post/' + auctionUID).on('child_changed', snapShot => {
+            if (snapShot.key === item.key) {
+                // console.log(snapShot.val(), '====2');
+
+                var bids = snapShot.val().bid
+                if (bids) {
+                    bids.map(item => {
+                        if (item.buyerUID === UID) {
+                            bidArr.push(item)
+                        }
+                    })
+                    this.setState({ _BIDS: bids })
+                    this.allBids(bids)
+                }
+            }
+            if (bidArr.length) {
+                this.setState({ add: true, bidArr })
+            }
+        })
     }
 
     allBids = (bids) => {
@@ -91,13 +119,19 @@ class ViewAuction extends React.Component {
                         buyerUID: UID
                     }]
                 }
-                firebase.database().ref('/Post/' + auctionUID + '/' + key + '/' ).update(objt)
+                firebase.database().ref('/Post/' + auctionUID + '/' + key + '/').update(objt)
 
             }
             // console.log('====>>>', _allBids);
         } else {
             alert('Please input Correct Ammount')
         }
+    }
+
+    chat() {
+        const { auctionUser } = this.state
+        var item = auctionUser
+        this.props.navigation.navigate('Chat', { item })
     }
 
     Back() {
@@ -113,8 +147,8 @@ class ViewAuction extends React.Component {
             <View style={{ flex: 1 }}>
                 <Header
                     placement="center"
-                    rightComponent={{ icon: 'chat', color: 'white' }}
-                    centerComponent={{ text: item.category, style: { color: '#fff' } }}
+                    rightComponent={{ icon: 'chat', color: 'white', onPress: () => this.chat() }}
+                    centerComponent={{ text: item.data.category, style: { color: '#fff', fontWeight: '400', fontSize: 18 } }}
                     leftComponent={{ icon: 'arrow-back', color: '#fff', onPress: () => this.Back() }}
                 />
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' enabled>
@@ -135,14 +169,15 @@ class ViewAuction extends React.Component {
                             bidArr &&
                             bidArr.map((item, index) => {
                                 return (
-                                    <View key={index}>
-                                        <Text style={styles.heading} >{item.amount}</Text>
+                                    <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                                        <Text style={styles.heading} >{'Your bid: ' + item.amount + ' '}<Icon name='rupee' size={16} color='black' /></Text>
+                                        {/* <Text style={styles.btn} onPress={() => this.setState({ add: true, priceInput: true })}>Update</Text> */}
                                     </View>
                                 )
                             })
                             :
                             <View style={{ alignItems: 'center', marginTop: 10 }}>
-                                <Text style={styles.btn} onPress={() => this.setState({ add: true, priceInput: true })}>Add</Text>
+                                <Text style={styles.btn} onPress={() => this.setState({ add: true, priceInput: true })}>Bid</Text>
                             </View>
                         }
                         {
