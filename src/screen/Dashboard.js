@@ -29,28 +29,34 @@ class Dashboard extends React.Component {
         var liveBid = [];
         var upcoming = [];
         if (allPost) {
-            allPost.map(item => {
-                if (moment(item.StartTime) <= moment(Date.now())
-                    &&
-                    moment(item.EndTime) >= moment(Date.now())) {
-                    liveBid.push(item)
-                }
-                if (moment(item.StartTime) > moment(Date.now())) {
-                    upcoming.push(item)
-                    console.log('pppp', item.StartTime);
-                }
-                // console.log(item.UID);
+            setTimeout(() => {
 
-            })
-            if (liveBid.length) {
-                this.setState({ liveBid })
-            }
-            if (upcoming.length) {
-                this.setState({ upcomingBid: upcoming })
-            }
+                allPost.map(item => {
+                    if (moment(item.data.StartTime) <= moment(Date.now())
+                        &&
+                        moment(item.data.EndTime) >= moment(Date.now())) {
+                        liveBid.push(item)
+                    }
+                    if (moment(item.data.StartTime) > moment(Date.now())) {
+                        upcoming.push(item)
+                        console.log('pppp', item.StartTime);
+                    }
+                    console.log(item);
+                })
+                if (liveBid.length) {
+                    this.setState({ liveBid })
+                }
+                if (upcoming.length) {
+                    this.setState({ upcomingBid: upcoming })
+                }
+            }, 100)
         }
-
     }
+
+    view(item) {
+        this.props.navigation.navigate('ViewAuction', { item })
+    }
+
     setMenuRef = ref => {
         this._menu = ref;
     };
@@ -114,16 +120,16 @@ class Dashboard extends React.Component {
                                     <View key={index} style={{ flexDirection: 'row' }} >
                                         <View style={{ height: 255, width: 170, borderWidth: 2, flex: 1, borderColor: '#e1e9f4', margin: 15, backgroundColor: '#cce6ff', borderRadius: 10, }}>
                                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={styles.cardTitle}>{item.category}</Text>
+                                                <Text style={styles.cardTitle}>{item.data.category}</Text>
                                             </View>
                                             <View>
-                                                <Image style={styles.imgUpcoming} source={{ uri: item.image }} />
+                                                <Image style={styles.imgUpcoming} source={{ uri: item.data.image }} />
                                             </View>
                                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={styles.titleName}>Price: {item.Price} Pkr</Text>
+                                                <Text style={styles.titleName}>Price: {item.data.Price} Pkr</Text>
                                             </View>
                                             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={{ fontSize: 16, color: '#3498db', paddingBottom: 8, paddingTop: 3 }}>{moment(new Date(item.StartTime)).fromNow()}</Text>
+                                                <Text style={{ fontSize: 16, color: '#3498db', paddingBottom: 8, paddingTop: 3 }}>{moment(new Date(item.data.StartTime)).fromNow()}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -139,16 +145,16 @@ class Dashboard extends React.Component {
                                 <View key={index} style={{ flexDirection: 'row' }} >
                                     <View style={{ height: 320, width: '95%', borderWidth: 2, flex: 1, borderColor: '#e1e9f4', margin: 15, backgroundColor: '#cce6ff', borderRadius: 10, }}>
                                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text style={styles.cardTitle}>{item.category}</Text>
+                                            <Text style={styles.cardTitle}>{item.data.category}</Text>
                                         </View>
                                         <View>
-                                            <Image style={styles.img} source={{ uri: item.image }} />
+                                            <Image style={styles.img} source={{ uri: item.data.image }} />
                                         </View>
                                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text style={styles.titleName}>Price: {item.Price} Pkr</Text>
+                                            <Text style={styles.titleName}>Price: {item.data.Price} Pkr</Text>
                                         </View>
                                         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                                            <Text onPress={() => this.viewSeller(item)} style={{ fontSize: 16, color: '#3498db', paddingBottom: 8, paddingTop: 3 }}>VIEW NOW</Text>
+                                            <Text onPress={() => this.view(item)} style={{ fontSize: 16, color: '#3498db', paddingBottom: 8, paddingTop: 3 }}>VIEW NOW</Text>
                                         </View>
                                     </View>
                                 </View>

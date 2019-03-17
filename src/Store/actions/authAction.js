@@ -74,13 +74,21 @@ export function current_User(currentUser) {
             for (var key in snapShot.val()) {
                 var val = snapShot.val()[key]
                 if (snapShot.key === UID) {
-                    currentUserPost.push(val)
+                    const obj = {
+                        key: key,
+                        data: val
+                    }
+                    currentUserPost.push(obj)
+                    // console.log('======>>>', key);
                     dispatch(
                         { type: actionTypes.POST, payload: currentUserPost }
                     )
-                    // console.log('======>>>', currentUserPost);
                 } else {
-                    PostArray.push(val)
+                    const obj = {
+                        key: key,
+                        data: val
+                    }
+                    PostArray.push(obj)
                     dispatch(
                         { type: actionTypes.ALLPOST, payload: PostArray }
                     )
