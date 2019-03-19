@@ -2,7 +2,7 @@ import React from 'react';
 import Navigation from './src/navigation/StackNavigation';
 import { Provider } from 'react-redux'
 import store from './src/Store/store'
-// console.disableYellowBox = true;
+console.disableYellowBox = true;
 
 export default class App extends React.Component {
   render() {

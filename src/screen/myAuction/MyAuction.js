@@ -26,6 +26,7 @@ class MyAuction extends React.Component {
     myPost(post) {
         var liveBid = [];
         var upcoming = [];
+        var sellOut = []
         if (post) {
             post.map(item => {
                 if (moment(item.data.StartTime) <= moment(Date.now())
@@ -35,17 +36,81 @@ class MyAuction extends React.Component {
                 }
                 if (moment(item.data.StartTime) > moment(Date.now())) {
                     upcoming.push(item)
-                    console.log('pppp', item.StartTime);
+                    // console.log('pppp', item.StartTime);
                 }
-                console.log(item);
+                if (moment(item.data.EndTime) <= moment(Date.now())) {
+                    // sellOut.push(item)
+                }
+                // console.log(item);
             })
             if (liveBid.length) {
-                this.setState({ liveBid })
+                this.setState({ liveBid: liveBid })
+                this.sellOut(liveBid)
             }
             if (upcoming.length) {
                 this.setState({ upcomingBid: upcoming })
             }
         }
+    }
+
+    sellOut = (liveBid) => {
+        const { alluser } = this.props;
+        // const { liveBid } = this.state
+        // const bids = liveBid.data.bid
+        var arr = []
+        if (liveBid) {
+            liveBid.map(item => {
+                // console.log(item, 'item');
+
+                var bids = item.data.bid
+                // console.log(bids, '--***')
+                this.setState({ bids })
+                if (bids) {
+
+                    bids.map(item => {
+                        var obj = item.amount
+                        arr.push(obj)
+
+                    })
+                }
+                // }
+            })
+            if (arr.length) {
+                const abc = arr.sort(function (a, b) { return a - b });
+                var xy = abc.pop()
+                this.bigAmount(xy, liveBid)
+            }
+        }
+    }
+
+    bigAmount = (xy, liveBid) => {
+        const { alluser } = this.props
+        if (xy && liveBid) {
+            liveBid.map(items => {
+                var bids = items.data.bid
+                if (bids) {
+                    bids.map(item => {
+                        if (item.amount === xy) {
+                            alluser.map(i => {
+                                if (item.buyerUID === i.UID) {
+                                    var obj = {
+                                        Name: i.Name,
+                                        userPhoto: i.image,
+                                        price: item.amount,
+                                        img: items.data.image,
+                                        catag: items.data.category
+                                    }
+                                    this.setState({ sale: obj, _sale: true })
+                                    console.log(obj, '==--');
+                                }
+                            })
+                        }
+
+                    })
+                }
+            })
+        }
+
     }
 
     view(item) {
@@ -67,7 +132,9 @@ class MyAuction extends React.Component {
                     // rightComponent={{ icon: 'search', color: 'white', onPress: () => this.startSearch() }}
                     centerComponent={{ text: 'Auction', style: { color: '#fff' } }}
                     leftComponent={{ icon: 'arrow-back', color: '#fff', onPress: () => this.Back() }}
-                />{post ?
+                />
+
+                {post ?
                     <ScrollView>
 
                         <Text style={styles.heading}>live Bidding! </Text>

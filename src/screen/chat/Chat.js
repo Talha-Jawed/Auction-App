@@ -126,7 +126,7 @@ class Chat extends React.Component {
     render() {
         const { text, chatMesg, currentUser, person, btn } = this.state
 
-        const keyboardVerticalOffset = Platform.OS === 'ios' ? 53 : 0 || Platform.OS === 'android' ? 53 : 0
+        const keyboardVerticalOffset = Platform.OS === 'ios' ? 53 : 0 || Platform.OS === 'android' ? 66 : 0
         return (
             <View style={{ flex: 1 }}>
                 <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' enabled keyboardVerticalOffset={keyboardVerticalOffset}>

@@ -23,25 +23,23 @@ class Dashboard extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-        const { UID, CurrentUser, post, allPost } = props
-        // console.log('post===>>', post);
-        console.log('allPost===>>', allPost);
-        var liveBid = [];
-        var upcoming = [];
+        const { allPost } = props
         if (allPost) {
             setTimeout(() => {
 
+                var liveBid = [];
+                var upcoming = [];
+                var sellOut = []
                 allPost.map(item => {
                     if (moment(item.data.StartTime) <= moment(Date.now())
                         &&
                         moment(item.data.EndTime) >= moment(Date.now())) {
                         liveBid.push(item)
-                    }
-                    if (moment(item.data.StartTime) > moment(Date.now())) {
+                    } else if (moment(item.data.StartTime) > moment(Date.now())) {
                         upcoming.push(item)
-                        console.log('pppp', item.StartTime);
+                    } else if (moment(item.data.EndTime) <= moment(Date.now())) {
+                        sellOut.push(item)
                     }
-                    console.log(item);
                 })
                 if (liveBid.length) {
                     this.setState({ liveBid })
@@ -49,8 +47,61 @@ class Dashboard extends React.Component {
                 if (upcoming.length) {
                     this.setState({ upcomingBid: upcoming })
                 }
+                if (sellOut.length) {
+                    this.sellOut(sellOut)
+                }
             }, 100)
+            setInterval(() => {
+                var liveBid = [];
+                var upcoming = [];
+                console.log('interval*****');
+                allPost.map(item => {
+                    if (moment(item.data.StartTime) <= moment(Date.now())
+                        &&
+                        moment(item.data.EndTime) >= moment(Date.now())) {
+                        liveBid.push(item)
+                    } else if (moment(item.data.StartTime) > moment(Date.now())) {
+                        upcoming.push(item)
+                    } else if (moment(item.data.EndTime) <= moment(Date.now())) {
+                        sellOut.push(item)
+                    }
+                })
+                if (liveBid.length) {
+                    this.setState({ liveBid })
+                }
+                if (upcoming.length) {
+                    this.setState({ upcomingBid: upcoming })
+                }
+                if (sellOut.length) {
+                    this.sellOut(sellOut)
+                }
+            }, 20000)
         }
+    }
+
+    sellOut = (sellOut) => {
+        // console.log(sellOut, 'item');
+        if (sellOut) {
+            sellOut.map(item => {
+
+                var bids = item.data.bid
+                var key = item.key
+                var auctionUID = item.data.UID
+                var max = bids.reduce(function (prev, current) {
+                    return (prev.amount > current.amount) ? prev : current
+                });
+                var obj = {
+                    sellOut: 'SALEOUT',
+                    buyerUID: max.buyerUID
+                }
+                firebase.database().ref('/Post/' + '/' + auctionUID + '/' + key).update(obj)
+            })
+        }
+    }
+
+    componentWillUnmount() {
+        console.log('unmount***');
+
     }
 
     view(item) {
@@ -79,7 +130,7 @@ class Dashboard extends React.Component {
         this.props.navigation.navigate('Inbox')
     }
 
-    auction(){
+    auction() {
         this._menu.hide();
         this.props.navigation.navigate('MyAuction')
     }
@@ -112,7 +163,7 @@ class Dashboard extends React.Component {
                     button={<Text></Text>}
                 >
                     <MenuItem onPress={() => this.createPost()}>Add Services</MenuItem>
-                    <MenuItem onPress={()=> this.auction()}>Auction</MenuItem>
+                    <MenuItem onPress={() => this.auction()}>Auction</MenuItem>
                     <MenuItem >Notifications</MenuItem>
                     <MenuItem onPress={() => this.inbox()} >Inbox</MenuItem>
                     <MenuDivider />

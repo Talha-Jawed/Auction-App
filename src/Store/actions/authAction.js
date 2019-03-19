@@ -70,6 +70,7 @@ export function current_User(currentUser) {
             }
         })
 
+        // All Post
         firebase.database().ref('/Post/').on("child_added", snapShot => {
             for (var key in snapShot.val()) {
                 var val = snapShot.val()[key]
@@ -79,23 +80,24 @@ export function current_User(currentUser) {
                         data: val
                     }
                     currentUserPost.push(obj)
-                    // console.log('======>>>', key);
                     dispatch(
                         { type: actionTypes.POST, payload: currentUserPost }
                     )
                 } else {
-                    const obj = {
-                        key: key,
-                        data: val
+                    if (val.sellOut === 'SALEOUT') {
+                        // console.log(val, 'lllll====');
+                    } else {
+                        const obj = {
+                            key: key,
+                            data: val
+                        }
+                        PostArray.push(obj)
+                        dispatch(
+                            { type: actionTypes.ALLPOST, payload: PostArray }
+                        )
                     }
-                    PostArray.push(obj)
-                    dispatch(
-                        { type: actionTypes.ALLPOST, payload: PostArray }
-                    )
-                    // console.log(PostArray, '------');
                 }
             }
-
         })
 
         // MESSAGES
