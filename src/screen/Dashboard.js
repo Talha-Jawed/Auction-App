@@ -29,7 +29,7 @@ class Dashboard extends React.Component {
 
                 var liveBid = [];
                 var upcoming = [];
-                var sellOut = []
+                var sellOut = [];
                 allPost.map(item => {
                     if (moment(item.data.StartTime) <= moment(Date.now())
                         &&
@@ -54,6 +54,7 @@ class Dashboard extends React.Component {
             setInterval(() => {
                 var liveBid = [];
                 var upcoming = [];
+                var sellOut = [];
                 console.log('interval*****');
                 allPost.map(item => {
                     if (moment(item.data.StartTime) <= moment(Date.now())
